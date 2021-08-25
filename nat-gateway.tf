@@ -3,7 +3,6 @@
 resource "aws_eip" "eip-for-nat-gateway" {
   count = length(var.public_availability_zones)
   vpc   = true
-
   tags   = {
     Name = "EIP NAT Gateway ${count.index}"
   }
@@ -29,7 +28,6 @@ resource "aws_route_table" "private-route-table" {
     cidr_block     = "0.0.0.0/0"
     nat_gateway_id = aws_nat_gateway.nat-gateway[count.index].id
   }
-
   tags   = {
     Name = "Private Route Table ${var.public_availability_zones[count.index]}"
   }
@@ -42,5 +40,3 @@ resource "aws_route_table_association" "private-subnet-route-table-association" 
   subnet_id      = aws_subnet.private-subnet[count.index].id
   route_table_id = aws_route_table.private-route-table[index(var.public_availability_zones, var.private_availability_zones[count.index])].id
 }
-
-# --------
